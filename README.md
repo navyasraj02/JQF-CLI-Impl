@@ -1,21 +1,7 @@
 # Continuous Fuzzing for Java Example
 
 This is an example of how to integrate your [JQF](https://github.com/rohanpadhye/jqf) targets into GitLab CI/CD
-
-This example will show the following steps:
-* [Building and running a simple JQF target locally](#building-jqf-target)
-* [Running the JQF target via GitLab CI/CD](#running-jqf-from-ci)
-
-Result:
-* The libFuzzer targets will run continuously on the master branch .
-* The libFuzzer targets will run regression tests on every pull-request (and every other branch) with the generated corpus and crashes to catch bugs early on.
-
-Coverage Guided Structure Aware Fuzzing for Java can help find both complex bugs, as well as correctness bugs.
-Java is a safe language so memory corruption bugs are very unlikely to happen, but some bugs can still have security
-implications.
-
-This tutorial focuses less on how to build JQF targets and more on how to integrate the targets with GitLab CI/CD. A lot of 
-great information is available at the [JQF Wiki](https://github.com/rohanpadhye/jqf/wiki/Fuzzing-with-Zest).
+[Ref Link](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example/-/tree/master?ref_type=heads)
 
 ## Building JQF Target
 
@@ -64,17 +50,13 @@ public class ParseComplexFuzz {
 This is pretty straight forward the fuzzer will generate the psudo random string via data according to
 the coverage feedback
 
-### Building & Running the fuzzer
+### Steps to run
 
 ```bash
-git clone https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example.git
-cd example-java
-docker run -v `pwd`:/app -it maven:3.6.1-jdk-12 /bin/bash
-cd /app
-# Change to maven repo once 1.3 is out
-# Download jqf-fuzz-zest-cli. TODO: add how
-mvn package
-java -jar zest-cli.jar  -e ./target/example-java-1.0-SNAPSHOT-fat-tests.jar org.gitlab.examplejava.ParseComplexTest fuzz
+1. git clone https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example.git
+2. cd java-fuzzing-example
+3. mvn package
+4. java -jar zest-cli.jar -e ./target/example-java-1.0-SNAPSHOT-fat-tests.jar dev.fuzzit.examplejava.ParseComplexTest fuzz
 ```
 
 Will print the following output and stacktrace:
@@ -160,11 +142,3 @@ FAILURES!!!
 Tests run: 1,  Failures: 1
 
 ```
-
-For the possible command-lines for ZestCLI you can run `java -jar zest-cli.jar --help`
-
-## Running JQF from CI
-
-TODO
-
-
