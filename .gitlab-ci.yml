@@ -1,0 +1,21 @@
+image: maven:3.6.3-jdk-11-openj9
+
+stages:
+  - test
+  - fuzz
+
+unit_test:
+  stage: test
+  script:
+    - echo "Stub for regular unit-tests"
+
+include:
+  - template: Coverage-Fuzzing.gitlab-ci.yml
+
+my_fuzz_target:
+  extends: .fuzz_base
+  script:
+    - mvn package
+    - curl -o zest-cli.jar https://repo1.maven.org/maven2/edu/berkeley/cs/jqf/jqf-fuzz/1.5/jqf-fuzz-1.5-zest-cli.jar
+    - ./gitlab-cov-fuzz run --engine jqf -- ./target/example-java-1.0-SNAPSHOT-fat-tests.jar dev.fuzzit.examplejava.ParseComplexTest fuzz
+    - ./gitlab-cov-fuzz run --regression=$REGRESSION --engine jqf -- ./target/example-java-1.0-SNAPSHOT-fat-tests.jar dev.fuzzit.examplejava.ParseComplexTest fuzz
